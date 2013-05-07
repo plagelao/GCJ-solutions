@@ -1,3 +1,5 @@
+require_relative '../test_solver'
+
 class Board
 
   LINES = [
@@ -19,6 +21,10 @@ class Board
   }
   EMPTY_CELL = '.'
 
+  def self.create(lines, sample)
+    self.new(lines.take(4).map{|s| s.split('')}.flatten)
+  end
+
   def initialize(board)
     @board = board
   end
@@ -35,22 +41,13 @@ class Board
   def more_movements
     @board.any?{|cell| cell == '.'}
   end
-end
 
-def solve_file(file, &block)
-  File.open('solution-a-large', 'w') do |out|
-    solution = []
-    test_cases, *lines = *File.open(file).read.split
-    test_cases.to_i.times do |sample|
-      board = Board.new(lines.drop(sample*4).take(4).map{|s| s.split('')}.flatten)
-      state = block.call(board)
-      solution << "Case ##{sample+1}: #{state}"
-    end
-    out.write solution.join("\n")
+  def lines_used
+    5
   end
 end
 
-solve_file('A-large.in') do |board|
+solve_file('a-sample.in', Board) do |board|
   if board.winner('X')
     "X won"
   elsif board.winner('O')
